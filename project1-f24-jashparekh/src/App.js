@@ -1,11 +1,10 @@
-import './App.css';
 import React, { useState, useEffect } from 'react';
-import ArrowButtons from './components/ArrowButtons';
+import './App.css';
 import PokemonDisplay from './components/PokemonDisplay';
-import InfoMovesToggle from './components/InfoMovesToggle';
 import PokemonInfo from './components/PokemonInfo';
 import PokemonMoves from './components/PokemonMoves';
-import { fetchPokemonData } from './services/pokemonService'; // Import the service
+import InfoMovesToggle from './components/InfoMovesToggle';
+import ArrowButtons from './components/ArrowButtons';
 
 function App() {
   const [pokemonId, setPokemonId] = useState(1);
@@ -13,31 +12,45 @@ function App() {
   const [showInfo, setShowInfo] = useState(true);
 
   useEffect(() => {
-    fetchPokemonData(pokemonId).then(data => setPokemonData(data));
+    fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`)
+      .then(response => response.json())
+      .then(data => setPokemonData(data))
+      .catch(error => console.error('Error fetching Pokémon data:', error));
   }, [pokemonId]);
-
-  const handlePrev = () => {
-    setPokemonId(prevId => (prevId > 1 ? prevId - 1 : prevId));
-  };
 
   const handleNext = () => {
     setPokemonId(prevId => prevId + 1);
   };
 
-  const handleToggle = (isInfo) => {
-    setShowInfo(isInfo);
+  const handlePrevious = () => {
+    setPokemonId(prevId => (prevId > 1 ? prevId - 1 : 1));
   };
 
+  const handleToggle = (showInfo) => {
+    setShowInfo(showInfo);
+  };
+
+  if (!pokemonData) {
+    return <div>Loading...</div>;
+  }
+
   return (
-    <div className="app-container">
-      <ArrowButtons onPrev={handlePrev} onNext={handleNext} />
-      {pokemonData && (
-        <>
+    <div className="App">
+      <h1>Bits of Good Mid-Semester Project</h1>
+      <div className="main-content">
+        <div className="left-panel">
           <PokemonDisplay pokemonData={pokemonData} />
+          <ArrowButtons onNext={handleNext} onPrevious={handlePrevious} />
+        </div>
+        <div className="right-panel">
           <InfoMovesToggle showInfo={showInfo} onToggle={handleToggle} />
-          {showInfo ? <PokemonInfo pokemonData={pokemonData} /> : <PokemonMoves pokemonData={pokemonData} />}
-        </>
-      )}
+          {showInfo ? (
+            <PokemonInfo pokemonData={pokemonData} />
+          ) : (
+            <PokemonMoves pokemonData={pokemonData} />
+          )}
+        </div>
+      </div>
     </div>
   );
 }
