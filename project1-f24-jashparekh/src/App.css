@@ -136,7 +136,7 @@
 
 .pokemon-moves {
   background-color: #ffffff; /* White background for moves */
-  padding: 10px;
+  padding: 20px; /* Increased padding for a larger area */
   border-radius: 10px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
   overflow-y: auto; /* Enable vertical scrolling */
@@ -147,6 +147,7 @@
   list-style-type: none;
   padding: 0;
   margin: 0;
+  font-size: 18px; /* Increase font size */
 }
 
 .pokemon-moves li {
